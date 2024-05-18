@@ -1,14 +1,19 @@
 from src.dto import FiltersParser
 
+import requests
 
 class Nopriz:
 
+    def __init__(self, filters: FiltersParser):
+        self.filters = filters
 
     def create_excel_file(self, filterdto: FiltersParser):
         pass
 
 
-    def parse(self, filterdto: FiltersParser):
+    def parse(self):
+        filterdto = self.filters
+
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0',
             'Accept': 'application/json, text/plain, */*',
@@ -24,29 +29,33 @@ class Nopriz:
             'Sec-Fetch-Site': 'same-origin',
             'Priority': 'u=1',
         }
-
         json_data = {
             'filters': {
                 'state': [
                     'disabled',
                 ],
                 'registry_registration_date': [
-                    '2024-05-18',
                 ],
                 'suspension_date': [
-                    '2024-05-18',
-                    '2024-05-31',
                 ],
             },
             'page': 1,
-            'pageCount': '100',
+            'pageCount': '7000',
             'sortBy': {
                 'registry_registration_date': 'DESC',
                 'director': 'ASC',
             },
         }
 
-        if filterdto.
+        if filterdto.date_join:
+            json_data['filters']['registry_registration_date'].extend([filterdto.data_start, filterdto.data_end])
+        else:
+            json_data['filters']['suspension_date'].extend([filterdto.data_start, filterdto.data_end])
 
-        response = requests.post('https://reestr.nopriz.ru/api/sro/all/member/list', cookies=cookies, headers=headers,
+
+
+        response = requests.post('https://reestr.nopriz.ru/api/sro/all/member/list', headers=headers,
                                  json=json_data)
+
+        print(response)
+        print(response.json())
