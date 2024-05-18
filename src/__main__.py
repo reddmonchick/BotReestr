@@ -26,6 +26,14 @@ def send_welcome(message):
     markup.add(itembtn1, itembtn2)
     bot.send_message(message.chat.id, "Выберите фильтр:", reply_markup=markup)
 
+@bot.message_handler(commands=['run'])
+def send_welcome(message):
+    markup = types.ReplyKeyboardMarkup(row_width=2)
+    itembtn1 = types.KeyboardButton('Дата')
+    itembtn2 = types.KeyboardButton('Статус')
+    markup.add(itembtn1, itembtn2)
+    bot.send_message(message.chat.id, "Выберите фильтр:", reply_markup=markup)
+
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
     conn = sqlite3.connect('database.db')
